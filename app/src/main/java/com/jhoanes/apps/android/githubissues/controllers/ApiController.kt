@@ -1,7 +1,6 @@
 package com.jhoanes.apps.android.githubissues.controllers
 
 import com.jhoanes.apps.android.githubissues.extentions.toIssues
-import com.jhoanes.apps.android.githubissues.extentions.toIssuesList
 import com.jhoanes.apps.android.githubissues.listeners.ApiListener
 import com.jhoanes.apps.android.githubissues.models.BaseModel
 import com.jhoanes.apps.android.githubissues.models.IssueModel

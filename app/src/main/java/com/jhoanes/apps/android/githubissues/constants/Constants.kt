@@ -4,6 +4,9 @@ class Constants {
     companion object {
 
         const val TITLE = "title"
-        const val STATUS = "status"
+        const val STATE = "state"
+        const val BODY = "body"
+        const val CREATED_AT = "created_at"
+        const val HTML_URL = "html_url"
     }
 }
