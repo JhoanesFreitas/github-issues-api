@@ -1,7 +1,10 @@
 package com.jhoanes.apps.android.githubissues.controllers
 
 import com.jhoanes.apps.android.githubissues.extentions.toIssues
+import com.jhoanes.apps.android.githubissues.extentions.toIssuesList
 import com.jhoanes.apps.android.githubissues.listeners.ApiListener
+import com.jhoanes.apps.android.githubissues.models.BaseModel
+import com.jhoanes.apps.android.githubissues.models.IssueModel
 import com.jhoanes.apps.android.githubissues.services.ApiCallback
 import com.jhoanes.apps.android.githubissues.services.ApiService
 import com.jhoanes.apps.android.githubissues.services.ControllerService
@@ -17,9 +20,10 @@ class ApiController private constructor() : ControllerService, KoinComponent {
 
     private val mApiService by inject<ApiService>()
 
-    override fun getIssues(callback: ApiCallback<Any>) {
+    @Suppress("UNCHECKED_CAST")
+    override fun getIssues(callback: ApiCallback<IssueModel>) {
         baseMethod(
-            callback,
+            callback as ApiCallback<BaseModel>,
             GsonUtil.instantiate()::toIssues,
             ApiListener()
         ) {
@@ -28,7 +32,7 @@ class ApiController private constructor() : ControllerService, KoinComponent {
     }
 
     private fun baseMethod(
-        apiCallback: ApiCallback<Any>, function: KFunction<Any>,
+        apiCallback: ApiCallback<BaseModel>, function: KFunction<Any>,
         callback: Callback<Any>, m: () -> Call<Any>?
     ) {
         callback as ApiListener
