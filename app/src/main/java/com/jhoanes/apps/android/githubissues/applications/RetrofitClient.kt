@@ -1,6 +1,6 @@
 package com.jhoanes.apps.android.githubissues.applications
 
-import com.jhoanes.apps.android.githubissues.constants.Constants.Companion.BASE_URL
+import com.jhoanes.apps.android.githubissues.constants.ApiConstants.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.KoinComponent
