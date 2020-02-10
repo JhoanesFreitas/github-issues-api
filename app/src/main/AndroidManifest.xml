@@ -14,6 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".ui.details.DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".ui.main.views.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.main.views.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +26,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.details.ShowImageActivity"
+            android:theme="@style/Theme.Transparent" />
     </application>
 
 </manifest>
