@@ -16,6 +16,7 @@ class ApiListener : Callback<Any> {
 
     override fun onFailure(call: Call<Any>, t: Throwable) {
         Log.e(ApiListener::class.java.name, "${t.message}")
+        callback?.error()
     }
 
     @Suppress("NO_REFLECTION_IN_CLASS_PATH", "UNCHECKED_CAST")
@@ -34,6 +35,7 @@ class ApiListener : Callback<Any> {
                     callback?.result(array)
                 }.start()
             }
+            else -> callback?.error()
         }
 
     }

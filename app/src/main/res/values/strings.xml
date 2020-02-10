@@ -93,4 +93,5 @@
     <string name="action_settings">Settings</string>
     <string name="created_at">Created at</string>
     <string name="at">at</string>
+    <string name="currently_unavailable">Currently unavailable!</string>
 </resources>

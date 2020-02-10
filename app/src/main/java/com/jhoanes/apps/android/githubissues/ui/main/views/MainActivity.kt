@@ -18,6 +18,7 @@ import com.jhoanes.apps.android.githubissues.services.ControllerService
 import com.jhoanes.apps.android.githubissues.services.ViewCallback
 import com.jhoanes.apps.android.githubissues.ui.main.adapters.IssueAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_currently_unavailable.*
 import kotlinx.android.synthetic.main.progress_bar_layout.*
 import kotlinx.android.synthetic.main.progress_layout.*
 import org.koin.android.ext.android.inject
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
     private val mHandler = Handler(Looper.getMainLooper())
     private val mProgressBar by lazy { progress_circular }
     private val mProgressBarCentral by lazy { progress_circular_central }
+    private val mUnavailable by lazy { unavailable_tv }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +45,7 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
 
         showProgress()
         hideProgressCentral()
+        hideUnavailable()
 
         ApiCallbackImpl.callback = this
     }
@@ -54,7 +57,6 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
 
     override fun onStart() {
         super.onStart()
-
         mPresenter.getIssues(ApiCallbackImpl)
     }
 
@@ -66,11 +68,13 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
         mHandler.post {
             mAdapter.replaceAll(t.toMutableList())
             hideProgress()
+            hideUnavailable()
         }
     }
 
     override fun error() {
-
+        hideProgress()
+        showUnavailable()
     }
 
     private fun showProgress() {
@@ -87,6 +91,14 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
 
     override fun hideProgressCentral() {
         mProgressBarCentral.visibility = GONE
+    }
+
+    private fun showUnavailable() {
+        mUnavailable.visibility = VISIBLE
+    }
+
+    private fun hideUnavailable() {
+        mUnavailable.visibility = GONE
     }
 
     override fun startActivity(t: IssueModel, activity: KClass<out Activity>) {

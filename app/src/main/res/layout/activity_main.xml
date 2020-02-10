@@ -17,5 +17,6 @@
 
     <include layout="@layout/progress_bar_layout" />
     <include layout="@layout/progress_layout" />
+    <include layout="@layout/layout_currently_unavailable" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
