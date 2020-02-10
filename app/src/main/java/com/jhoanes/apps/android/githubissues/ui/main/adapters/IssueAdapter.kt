@@ -49,7 +49,7 @@ class IssueAdapter(private val callback: ViewCallback<IssueModel>) :
     }
 
     class IssueHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val profileImage = itemView.findViewById<CircleImageView>(R.id.profile_image)
+        val profileImage = itemView.findViewById<CircleImageView?>(R.id.profile_image)
         val cardView = itemView.findViewById<CardView?>(R.id.cardView)
         val mTitleTV = itemView.findViewById<TextView?>(R.id.title)
         val mStatusTV = itemView.findViewById<TextView?>(R.id.status)
