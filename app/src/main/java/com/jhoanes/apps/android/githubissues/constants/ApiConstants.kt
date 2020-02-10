@@ -6,5 +6,4 @@ object ApiConstants {
 
     //GETs
     const val GET_ISSUES = "repos/JetBrains/kotlin/issues"
-    const val GET = ""
 }

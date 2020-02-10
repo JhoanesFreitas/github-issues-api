@@ -12,5 +12,13 @@ class Constants {
         const val USER = "user"
 
         const val ISSUE_MODEL = "issue_model"
+
+        const val PORTUGUESE = "português"
+
+        const val NULL_STRING = "null"
+
+        const val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+
+        const val EMPTY_STRING = ""
     }
 }
