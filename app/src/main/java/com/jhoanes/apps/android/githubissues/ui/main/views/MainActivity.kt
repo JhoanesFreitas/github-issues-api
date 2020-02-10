@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Parcelable
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jhoanes.apps.android.githubissues.R
@@ -16,6 +18,7 @@ import com.jhoanes.apps.android.githubissues.services.ControllerService
 import com.jhoanes.apps.android.githubissues.services.ViewCallback
 import com.jhoanes.apps.android.githubissues.ui.main.adapters.IssueAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.progress_bar_layout.*
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 import kotlin.reflect.KClass
@@ -26,6 +29,7 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
     private val mAdapter by inject<IssueAdapter> { parametersOf(this) }
     private val mPresenter by inject<ControllerService>()
     private val mHandler = Handler(Looper.getMainLooper())
+    private val mProgressBar by lazy { progress_circular }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +38,8 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
         mRecyclerView.adapter = mAdapter
         mRecyclerView.layoutManager = LinearLayoutManager(applicationContext)
         mRecyclerView.setHasFixedSize(true)
+
+        showProgress()
 
         ApiCallbackImpl.callback = this
     }
@@ -51,11 +57,20 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
     override fun result(t: List<IssueModel>) {
         mHandler.post {
             mAdapter.replaceAll(t.toMutableList())
+            hideProgress()
         }
     }
 
     override fun error() {
 
+    }
+
+    private fun showProgress() {
+        mProgressBar.visibility = VISIBLE
+    }
+
+    private fun hideProgress() {
+        mProgressBar.visibility = GONE
     }
 
     override fun startActivity(t: IssueModel, activity: KClass<out Activity>) {
