@@ -18,7 +18,6 @@ import com.jhoanes.apps.android.githubissues.utils.DateUtil.Companion.getDate
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.content_detail.*
 
-
 class DetailActivity : AppCompatActivity() {
 
     private val mAvatarImage by lazy { avatar_image }
@@ -45,12 +44,9 @@ class DetailActivity : AppCompatActivity() {
             intent.data = Uri.parse(data?.url)
             startActivity(intent)
         }
-
-        Glide.with(this)
-            .load(data?.user?.avatar)
-            .into(mAvatarImage)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun onClick(v: View) {
         val intent = Intent(this, ShowImageActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -66,6 +62,10 @@ class DetailActivity : AppCompatActivity() {
         mCreatedAtTV?.text =
             "${getDate(date)} " +
                     "${getString(R.string.at)} ${DateUtil.getHour(date)}"
+
+        Glide.with(this)
+            .load(data?.user?.avatar)
+            .into(mAvatarImage)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
