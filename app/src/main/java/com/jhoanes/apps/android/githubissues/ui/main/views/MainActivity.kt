@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
 
     private val mRecyclerView by lazy { recycler_view }
     private val mAdapter by inject<IssueAdapter> { parametersOf(this) }
-    private val mPresenter by inject<ControllerService>()
+    private val mControllerService by inject<ControllerService>()
     private val mHandler = Handler(Looper.getMainLooper())
     private val mProgressBar by lazy { progress_circular }
     private val mProgressBarCentral by lazy { progress_circular_central }
@@ -47,6 +47,8 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
         hideProgressCentral()
         hideUnavailable()
 
+        reload()
+
         ApiCallbackImpl.callback = this
     }
 
@@ -57,7 +59,7 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
 
     override fun onStart() {
         super.onStart()
-        mPresenter.getIssues(ApiCallbackImpl)
+        mControllerService.getIssues(ApiCallbackImpl)
     }
 
     override fun result(t: IssueModel) {
@@ -99,6 +101,13 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
 
     private fun hideUnavailable() {
         mUnavailable.visibility = GONE
+    }
+
+    private fun reload() {
+        mUnavailable.setOnClickListener {
+            showProgress()
+            mControllerService.getIssues(ApiCallbackImpl)
+        }
     }
 
     override fun startActivity(t: IssueModel, activity: KClass<out Activity>) {

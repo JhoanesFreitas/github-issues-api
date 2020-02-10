@@ -22,6 +22,7 @@ object ApiCallbackImpl : ApiCallback<IssueModel> {
     }
 
     override fun error() {
+        callback.error()
     }
 
 }
