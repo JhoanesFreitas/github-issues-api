@@ -17,6 +17,7 @@ import com.jhoanes.apps.android.githubissues.utils.DateUtil.Companion.convertStr
 import com.jhoanes.apps.android.githubissues.utils.DateUtil.Companion.getDate
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.content_detail.*
+import kotlinx.android.synthetic.main.progress_layout.*
 
 class DetailActivity : AppCompatActivity() {
 
@@ -25,6 +26,7 @@ class DetailActivity : AppCompatActivity() {
     private val mDescriptionTV by lazy { description }
     private val mCreatedAtTV by lazy { created_at }
     private var mAvatarUrl: CharSequence? = null
+    private val mProgressBarCentral by lazy { progress_circular_central }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,16 +40,24 @@ class DetailActivity : AppCompatActivity() {
         mAvatarUrl = data?.user?.avatar
 
         setData(data)
+        hideProgressCentral()
 
         fab.setOnClickListener {
+            showProgressCentral()
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse(data?.url)
             startActivity(intent)
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        hideProgressCentral()
+    }
+
     @Suppress("UNUSED_PARAMETER")
     fun onClick(v: View) {
+        showProgressCentral()
         val intent = Intent(this, ShowImageActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.putExtra(AVATAR, mAvatarUrl)
@@ -66,6 +76,14 @@ class DetailActivity : AppCompatActivity() {
         Glide.with(this)
             .load(data?.user?.avatar)
             .into(mAvatarImage)
+    }
+
+    private fun showProgressCentral() {
+        mProgressBarCentral.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressCentral() {
+        mProgressBarCentral.visibility = View.GONE
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
