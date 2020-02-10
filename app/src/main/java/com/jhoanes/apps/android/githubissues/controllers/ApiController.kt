@@ -1,7 +1,6 @@
 package com.jhoanes.apps.android.githubissues.controllers
 
 import com.jhoanes.apps.android.githubissues.extentions.toIssues
-import com.jhoanes.apps.android.githubissues.listeners.ApiListener
 import com.jhoanes.apps.android.githubissues.models.BaseModel
 import com.jhoanes.apps.android.githubissues.models.IssueModel
 import com.jhoanes.apps.android.githubissues.services.ApiCallback
@@ -9,10 +8,10 @@ import com.jhoanes.apps.android.githubissues.services.ApiService
 import com.jhoanes.apps.android.githubissues.services.ControllerService
 import com.jhoanes.apps.android.githubissues.utils.GsonUtil
 import com.jhoanes.apps.android.githubissues.utils.Params.Companion.defaultHeader
+import com.jhoanes.apps.android.githubissues.utils.RxUtil
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import retrofit2.Call
-import retrofit2.Callback
+import rx.Observable
 import kotlin.reflect.KFunction
 
 class ApiController private constructor() : ControllerService, KoinComponent {
@@ -23,21 +22,35 @@ class ApiController private constructor() : ControllerService, KoinComponent {
     override fun getIssues(callback: ApiCallback<IssueModel>) {
         baseMethod(
             callback as ApiCallback<BaseModel>,
-            GsonUtil.instantiate()::toIssues,
-            ApiListener()
+            GsonUtil.instantiate()::toIssues
         ) {
-            mApiService.getIssues(defaultHeader())
+            RxUtil.applyHandlerStartFinish(mApiService.getIssues(defaultHeader()),
+                Runnable {
+                    callback.showProgress()
+                },
+                Runnable {
+                    callback.hideProgress()
+                })
+                .compose(RxUtil.applySchedulers())
         }
     }
 
     private fun baseMethod(
         apiCallback: ApiCallback<BaseModel>, function: KFunction<Any>,
-        callback: Callback<Any>, m: () -> Call<Any>?
+        m: () -> Observable<List<Any>>?
     ) {
-        callback as ApiListener
-        callback.callback = apiCallback
-        callback.deserializer = function
-        m()?.enqueue(callback)
+        m()?.subscribe(
+            {
+                val array = mutableListOf<IssueModel>()
+                it.forEach { issue ->
+                    array.add(function.call(issue) as IssueModel)
+                }
+                apiCallback.result(array)
+            },
+            {
+                apiCallback.error()
+            }
+        )
     }
 
     companion object {

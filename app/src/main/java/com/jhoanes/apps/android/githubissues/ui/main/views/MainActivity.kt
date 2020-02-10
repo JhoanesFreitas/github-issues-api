@@ -19,7 +19,6 @@ import com.jhoanes.apps.android.githubissues.services.ViewCallback
 import com.jhoanes.apps.android.githubissues.ui.main.adapters.IssueAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_currently_unavailable.*
-import kotlinx.android.synthetic.main.progress_bar_layout.*
 import kotlinx.android.synthetic.main.progress_layout.*
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
@@ -31,7 +30,6 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
     private val mAdapter by inject<IssueAdapter> { parametersOf(this) }
     private val mControllerService by inject<ControllerService>()
     private val mHandler = Handler(Looper.getMainLooper())
-    private val mProgressBar by lazy { progress_circular }
     private val mProgressBarCentral by lazy { progress_circular_central }
     private val mUnavailable by lazy { unavailable_tv }
 
@@ -43,7 +41,6 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
         mRecyclerView.layoutManager = LinearLayoutManager(applicationContext)
         mRecyclerView.setHasFixedSize(true)
 
-        showProgress()
         hideProgressCentral()
         hideUnavailable()
 
@@ -59,7 +56,9 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
 
     override fun onStart() {
         super.onStart()
-        mControllerService.getIssues(ApiCallbackImpl)
+
+        if (mAdapter.issues.isEmpty())
+            mControllerService.getIssues(ApiCallbackImpl)
     }
 
     override fun result(t: IssueModel) {
@@ -67,32 +66,24 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
     }
 
     override fun result(t: List<IssueModel>) {
-        mHandler.post {
-            mAdapter.replaceAll(t.toMutableList())
-            hideProgress()
-            hideUnavailable()
-        }
+        mAdapter.replaceAll(t.toMutableList())
+        hideUnavailable()
     }
 
     override fun error() {
-        hideProgress()
         showUnavailable()
     }
 
-    private fun showProgress() {
-        mProgressBar.visibility = VISIBLE
-    }
-
-    private fun hideProgress() {
-        mProgressBar.visibility = GONE
-    }
-
     override fun showProgressCentral() {
-        mProgressBarCentral.visibility = VISIBLE
+        mHandler.post {
+            mProgressBarCentral.visibility = VISIBLE
+        }
     }
 
     override fun hideProgressCentral() {
-        mProgressBarCentral.visibility = GONE
+        mHandler.post {
+            mProgressBarCentral.visibility = GONE
+        }
     }
 
     private fun showUnavailable() {
@@ -105,7 +96,6 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
 
     private fun reload() {
         mUnavailable.setOnClickListener {
-            showProgress()
             mControllerService.getIssues(ApiCallbackImpl)
         }
     }
