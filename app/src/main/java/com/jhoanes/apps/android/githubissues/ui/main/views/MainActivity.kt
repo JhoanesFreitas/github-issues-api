@@ -19,6 +19,7 @@ import com.jhoanes.apps.android.githubissues.services.ViewCallback
 import com.jhoanes.apps.android.githubissues.ui.main.adapters.IssueAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.progress_bar_layout.*
+import kotlinx.android.synthetic.main.progress_layout.*
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 import kotlin.reflect.KClass
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
     private val mPresenter by inject<ControllerService>()
     private val mHandler = Handler(Looper.getMainLooper())
     private val mProgressBar by lazy { progress_circular }
+    private val mProgressBarCentral by lazy { progress_circular_central }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +42,14 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
         mRecyclerView.setHasFixedSize(true)
 
         showProgress()
+        hideProgressCentral()
 
         ApiCallbackImpl.callback = this
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        hideProgressCentral()
     }
 
     override fun onStart() {
@@ -71,6 +79,14 @@ class MainActivity : AppCompatActivity(), ViewCallback<IssueModel> {
 
     private fun hideProgress() {
         mProgressBar.visibility = GONE
+    }
+
+    override fun showProgressCentral() {
+        mProgressBarCentral.visibility = VISIBLE
+    }
+
+    override fun hideProgressCentral() {
+        mProgressBarCentral.visibility = GONE
     }
 
     override fun startActivity(t: IssueModel, activity: KClass<out Activity>) {

@@ -32,6 +32,7 @@ class IssueAdapter(private val callback: ViewCallback<IssueModel>) :
         holder.mStatusTV?.text = issues[position].state
 
         holder.cardView?.setOnClickListener {
+            callback.showProgressCentral()
             callback.startActivity(issues[position], DetailActivity::class)
         }
     }

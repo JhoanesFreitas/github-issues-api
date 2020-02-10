@@ -9,4 +9,6 @@ interface ViewCallback<T> {
     fun result(t: List<T>)
     fun error()
     fun startActivity(t: T, activity: KClass<out Activity>)
+    fun showProgressCentral()
+    fun hideProgressCentral()
 }
